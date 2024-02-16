@@ -1,29 +1,45 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity 0.8.20;
 
-import "../contracts/YourContract.sol";
-import "./DeployHelpers.s.sol";
+import {ScaffoldETHDeploy} from "./DeployHelpers.s.sol";
+import {DeployDecentralizedAuctionScript} from "./DeployDecentralizedAuction.s.sol";
+import {NFTWithoutUri} from "../contracts/NFTWithoutUri.sol";
+import {NFTWithUri} from "../contracts/NFTWithUri.sol";
+import {console} from "forge-std/console.sol";
 
 contract DeployScript is ScaffoldETHDeploy {
     error InvalidPrivateKey(string);
 
     function run() external {
-        uint256 deployerPrivateKey = setupLocalhostEnv();
+        // Deploy DecentralizedAuction contract
+        DeployDecentralizedAuctionScript decentralizedAuctionScript = new DeployDecentralizedAuctionScript();
+        vm.allowCheatcodes(address(decentralizedAuctionScript));
+        decentralizedAuctionScript.run();
+
+        otherRun(address(decentralizedAuctionScript));
+    }
+
+    function getDeployerKey() internal returns (uint256 deployerPrivateKey) {
+        deployerPrivateKey = setupLocalhostEnv();
         if (deployerPrivateKey == 0) {
             revert InvalidPrivateKey(
                 "You don't have a deployer account. Make sure you have set DEPLOYER_PRIVATE_KEY in .env or use `yarn generate` to generate a new random account"
             );
         }
+    }
+
+    function otherRun(address _contract) internal {
+        uint256 deployerPrivateKey = getDeployerKey();
         vm.startBroadcast(deployerPrivateKey);
-        YourContract yourContract = new YourContract(
-            vm.addr(deployerPrivateKey)
+
+        NFTWithoutUri contract1 = new NFTWithoutUri(
+            _contract
         );
-        console.logString(
-            string.concat(
-                "YourContract deployed at: ",
-                vm.toString(address(yourContract))
-            )
-        );
+
+        NFTWithUri contract2 = new NFTWithUri();
+
+        console.logString(string.concat("NFTWithoutUri contract deployed: ", vm.toString(address(contract1))));
+        console.logString(string.concat("NFTWithUri contract deployed: ", vm.toString(address(contract2))));
         vm.stopBroadcast();
 
         /**
