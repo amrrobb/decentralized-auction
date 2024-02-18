@@ -11,7 +11,7 @@ const imageUrl = `${baseUrl}/thumbnail.jpg`;
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Scaffold-ETH 2 App",
+    default: "D-Auction App",
     template: "%s | Scaffold-ETH 2",
   },
   description: "Built with 🏗 Scaffold-ETH 2",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     description: "Built with 🏗 Scaffold-ETH 2",
   },
   icons: {
-    icon: [{ url: "/favicon.png", sizes: "32x32", type: "image/png" }],
+    icon: [{ url: "/logo.svg", sizes: "32x32", type: "image/png" }],
   },
 };
 

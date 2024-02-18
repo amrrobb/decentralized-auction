@@ -1,10 +1,33 @@
+"use client";
+
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import type { NextPage } from "next";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-const Collections: NextPage = () => {
+// import { useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
+
+const Detail: NextPage = () => {
+  const { collection, tokenId } = useParams<{ collection: string; tokenId: string }>();
+
+  // const { data: bidPlacedEvents, isLoading: isBidPlacedEventsLoading } = useScaffoldEventHistory({
+  //   contractName: "DecentralizedAuction",
+  //   eventName: "BidPlaced",
+  //   fromBlock: 5299390n,
+  //   filters: {
+  //     nftContract: collection,
+  //     tokenId: BigInt(tokenId),
+  //   },
+  // });
+
   return (
     <>
+      <div>
+        <h1>Detail Page</h1>
+        <p>collection: {collection}</p>
+        <p>tokenId: {tokenId}</p>
+        {/* <p>Seller: {seller}</p> */}
+      </div>
       <div className="flex items-center flex-col flex-grow pt-10">
         <div className="px-5">
           <h1 className="text-center mb-8">
@@ -30,8 +53,8 @@ const Collections: NextPage = () => {
         </div>
 
         {/* <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12"> */}
-        <div className="flex justify-around items-start gap-8 flex-col sm:flex-row">
-          <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl basis-1/4">
+        <div className="grid grid-cols-4 justify-items-center items-start gap-8">
+          <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
             <BugAntIcon className="h-8 w-8 fill-secondary" />
             <p>
               Tinker with your smart contract using the{" "}
@@ -41,17 +64,7 @@ const Collections: NextPage = () => {
               tab.
             </p>
           </div>
-          <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-4xl rounded-3xl basis-3/4">
-            <MagnifyingGlassIcon className="h-8 w-16 fill-secondary" />
-            <p>
-              Explore your local transactions with the{" "}
-              <Link href="/blockexplorer" passHref className="link">
-                Block Explorer
-              </Link>{" "}
-              tab.
-            </p>
-          </div>
-          {/* <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
+          <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-4xl rounded-3xl col-span-3 justify-self-stretch">
             <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
             <p>
               Explore your local transactions with the{" "}
@@ -60,7 +73,7 @@ const Collections: NextPage = () => {
               </Link>{" "}
               tab.
             </p>
-          </div> */}
+          </div>
         </div>
       </div>
       {/* </div> */}
@@ -68,4 +81,4 @@ const Collections: NextPage = () => {
   );
 };
 
-export default Collections;
+export default Detail;

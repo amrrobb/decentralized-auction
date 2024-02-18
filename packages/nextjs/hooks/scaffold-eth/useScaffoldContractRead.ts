@@ -5,6 +5,7 @@ import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import {
   AbiFunctionReturnType,
   ContractAbi,
+  ContractAddress,
   ContractName,
   UseScaffoldReadConfig,
 } from "~~/utils/scaffold-eth/contract";
@@ -19,20 +20,22 @@ import {
  */
 export const useScaffoldContractRead = <
   TContractName extends ContractName,
+  TContractAddress extends ContractAddress,
   TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>, "pure" | "view">,
 >({
   contractName,
+  contractAddress,
   functionName,
   args,
   ...readConfig
-}: UseScaffoldReadConfig<TContractName, TFunctionName>) => {
-  const { data: deployedContract } = useDeployedContractInfo(contractName);
+}: UseScaffoldReadConfig<TContractName, TContractAddress, TFunctionName>) => {
+  const { data: deployedContract } = useDeployedContractInfo(contractName, contractAddress);
   const { targetNetwork } = useTargetNetwork();
 
   return useContractRead({
     chainId: targetNetwork.id,
     functionName,
-    address: deployedContract?.address,
+    address: contractAddress || deployedContract?.address,
     abi: deployedContract?.abi,
     watch: true,
     args,

@@ -79,8 +79,6 @@ contract DecentralizedAuction is /*IERC721Receiver, */ Ownable {
         uint256 startingPrice,
         uint256 endTime
     );
-    // string tokenURI
-
     event BidPlaced(address indexed nftContract, uint256 indexed tokenId, address indexed bidder, uint256 bid);
     event AuctionEnded(
         address indexed nftContract,

@@ -2,16 +2,20 @@ import { useEffect, useState } from "react";
 import { useTargetNetwork } from "./useTargetNetwork";
 import { useIsMounted } from "usehooks-ts";
 import { usePublicClient } from "wagmi";
-import { Contract, ContractCodeStatus, ContractName, contracts } from "~~/utils/scaffold-eth/contract";
+import { Contract, ContractAddress, ContractCodeStatus, ContractName, contracts } from "~~/utils/scaffold-eth/contract";
 
 /**
  * Gets the matching contract info for the provided contract name from the contracts present in deployedContracts.ts
  * and externalContracts.ts corresponding to targetNetworks configured in scaffold.config.ts
  */
-export const useDeployedContractInfo = <TContractName extends ContractName>(contractName: TContractName) => {
+export const useDeployedContractInfo = <TContractName extends ContractName, TContractAddress extends ContractAddress>(
+  contractName: TContractName,
+  contractAddress?: TContractAddress,
+) => {
   const isMounted = useIsMounted();
   const { targetNetwork } = useTargetNetwork();
   const deployedContract = contracts?.[targetNetwork.id]?.[contractName as ContractName] as Contract<TContractName>;
+  const deployedContractAddress = contractAddress;
   const [status, setStatus] = useState<ContractCodeStatus>(ContractCodeStatus.LOADING);
   const publicClient = usePublicClient({ chainId: targetNetwork.id });
 
@@ -21,8 +25,9 @@ export const useDeployedContractInfo = <TContractName extends ContractName>(cont
         setStatus(ContractCodeStatus.NOT_FOUND);
         return;
       }
+
       const code = await publicClient.getBytecode({
-        address: deployedContract.address,
+        address: deployedContractAddress || deployedContract.address,
       });
 
       if (!isMounted()) {
@@ -37,7 +42,7 @@ export const useDeployedContractInfo = <TContractName extends ContractName>(cont
     };
 
     checkContractDeployment();
-  }, [isMounted, contractName, deployedContract, publicClient]);
+  }, [isMounted, contractName, deployedContract, publicClient, contractAddress]);
 
   return {
     data: status === ContractCodeStatus.DEPLOYED ? deployedContract : undefined,

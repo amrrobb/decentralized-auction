@@ -82,6 +82,8 @@ type Contracts = ContractsDeclaration[ConfiguredChainId];
 
 export type ContractName = keyof Contracts;
 
+export type ContractAddress = Address;
+
 export type Contract<TContractName extends ContractName> = Contracts[TContractName];
 
 type InferContractAbi<TContract> = TContract extends { abi: infer TAbi } ? TAbi : never;
@@ -159,9 +161,11 @@ type UseScaffoldArgsParam<
 
 export type UseScaffoldReadConfig<
   TContractName extends ContractName,
+  TContractAddress extends ContractAddress,
   TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>, ReadAbiStateMutability>,
 > = {
   contractName: TContractName;
+  contractAddress: TContractAddress;
 } & IsContractDeclarationMissing<
   Partial<UseContractReadConfig>,
   {
@@ -172,9 +176,11 @@ export type UseScaffoldReadConfig<
 
 export type UseScaffoldWriteConfig<
   TContractName extends ContractName,
+  TContractAddress extends ContractAddress,
   TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>, WriteAbiStateMutability>,
 > = {
   contractName: TContractName;
+  contractAddress?: TContractAddress;
   onBlockConfirmation?: (txnReceipt: TransactionReceipt) => void;
   blockConfirmations?: number;
 } & IsContractDeclarationMissing<

@@ -4,7 +4,7 @@ import { Abi, ExtractAbiFunctionNames } from "abitype";
 import { useContractWrite, useNetwork } from "wagmi";
 import { useDeployedContractInfo, useTransactor } from "~~/hooks/scaffold-eth";
 import { getParsedError, notification } from "~~/utils/scaffold-eth";
-import { ContractAbi, ContractName, UseScaffoldWriteConfig } from "~~/utils/scaffold-eth/contract";
+import { ContractAbi, ContractAddress, ContractName, UseScaffoldWriteConfig } from "~~/utils/scaffold-eth/contract";
 
 type UpdatedArgs = Parameters<ReturnType<typeof useContractWrite<Abi, string, undefined>>["writeAsync"]>[0];
 
@@ -21,8 +21,10 @@ type UpdatedArgs = Parameters<ReturnType<typeof useContractWrite<Abi, string, un
  */
 export const useScaffoldContractWrite = <
   TContractName extends ContractName,
+  TContractAddress extends ContractAddress,
   TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>, "nonpayable" | "payable">,
 >({
+  contractAddress,
   contractName,
   functionName,
   args,
@@ -30,8 +32,8 @@ export const useScaffoldContractWrite = <
   onBlockConfirmation,
   blockConfirmations,
   ...writeConfig
-}: UseScaffoldWriteConfig<TContractName, TFunctionName>) => {
-  const { data: deployedContractData } = useDeployedContractInfo(contractName);
+}: UseScaffoldWriteConfig<TContractName, TContractAddress, TFunctionName>) => {
+  const { data: deployedContractData } = useDeployedContractInfo(contractName, contractAddress);
   const { chain } = useNetwork();
   const writeTx = useTransactor();
   const [isMining, setIsMining] = useState(false);
@@ -39,7 +41,7 @@ export const useScaffoldContractWrite = <
 
   const wagmiContractWrite = useContractWrite({
     chainId: targetNetwork.id,
-    address: deployedContractData?.address,
+    address: contractAddress || deployedContractData?.address,
     abi: deployedContractData?.abi as Abi,
     functionName: functionName as any,
     args: args as unknown[],
@@ -52,8 +54,8 @@ export const useScaffoldContractWrite = <
     value: newValue,
     ...otherConfig
   }: {
-    args?: UseScaffoldWriteConfig<TContractName, TFunctionName>["args"];
-    value?: UseScaffoldWriteConfig<TContractName, TFunctionName>["value"];
+    args?: UseScaffoldWriteConfig<TContractName, TContractAddress, TFunctionName>["args"];
+    value?: UseScaffoldWriteConfig<TContractName, TContractAddress, TFunctionName>["value"];
   } & UpdatedArgs = {}) => {
     if (!deployedContractData) {
       notification.error("Target Contract is not deployed, did you forget to run `yarn deploy`?");
