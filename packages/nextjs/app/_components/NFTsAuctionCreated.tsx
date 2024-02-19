@@ -10,6 +10,7 @@ export const NFTsAuctionCreated = () => {
   const [NFTMetadataBatch, setNFTMetadataBatch] = useState<NftMetadataBatchToken[]>([]);
   const [NFTs, setNFTs] = useState<Nft[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [liveEvents, setLiveEvents] = useState<any[]>([]);
 
   const { data: auctionCreatedEvents, isLoading: isACreatedEventsLoading } = useScaffoldEventHistory({
     contractName: "DecentralizedAuction",
@@ -21,8 +22,6 @@ export const NFTsAuctionCreated = () => {
     try {
       if (NFTMetadataBatch.length) {
         const nfts = await alchemy.nft.getNftMetadataBatch(NFTMetadataBatch);
-        console.log(nfts.nfts, "-------");
-
         if (nfts) {
           setNFTs(nfts.nfts);
         }
@@ -34,20 +33,32 @@ export const NFTsAuctionCreated = () => {
 
   useEffect(() => {
     if (!isLoading && auctionCreatedEvents && auctionCreatedEvents.length) {
+      const duplicate: any = {};
+      const liveEvents: any[] = [];
       const batch: NftMetadataBatchToken[] = [];
-      auctionCreatedEvents?.map(event => {
-        batch.push({
-          contractAddress: event.args.nftContract!,
-          tokenId: Number(event.args.tokenId!),
-        });
+      auctionCreatedEvents?.map(async event => {
+        const argCollection = event.args!.nftContract!;
+        const argTokenId = String(event.args!.tokenId!);
+        const key = `${argCollection}/${argTokenId}`;
+
+        if (duplicate[key] === undefined) {
+          duplicate[key] = 1;
+
+          batch.push({
+            contractAddress: argCollection,
+            tokenId: argTokenId,
+          });
+          liveEvents.push(event);
+        }
       });
+      setLiveEvents(liveEvents);
       setNFTMetadataBatch(batch);
       setIsLoading(true);
     }
     if (isLoading) {
       fetchNFTs();
     }
-  }, [isACreatedEventsLoading, auctionCreatedEvents, isLoading, fetchNFTs]);
+  }, [isACreatedEventsLoading, auctionCreatedEvents, isLoading]);
 
   return (
     <>
@@ -59,11 +70,11 @@ export const NFTsAuctionCreated = () => {
           <h2 className="text-xl text-gray-200 flex justify-center">Loading...</h2>
         ) : (
           <>
-            {!auctionCreatedEvents || auctionCreatedEvents.length === 0 ? (
+            {!auctionCreatedEvents || auctionCreatedEvents.length === 0 || liveEvents.length === 0 ? (
               <h2 className="text-xl text-gray-200 flex justify-center">No events found</h2>
             ) : (
               <div className="justify-items-center items-center gap-8 grid grid-cols-5">
-                {auctionCreatedEvents?.map((event, index) => {
+                {liveEvents?.map((event, index) => {
                   return <NFTAuctionCard key={index} eventArgs={event.args} nft={NFTs[index]}></NFTAuctionCard>;
                 })}
               </div>

@@ -26,7 +26,7 @@ contract NFTWithUri is ERC721, ERC721URIStorage {
     // deployed  MockPriceFeed.sol contract (0xD753A1c190091368EaC67bbF3Ee5bAEd265aC420).
     constructor() ERC721("AToken", "ATK") {}
 
-    function mint(address to) public {
+    function safeMint(address to) public {
         _nextTokenId++;
         _safeMint(to, _nextTokenId);
         string memory defaultUri = uriIpfs[lastIndex];

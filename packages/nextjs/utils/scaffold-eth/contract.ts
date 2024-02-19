@@ -165,7 +165,7 @@ export type UseScaffoldReadConfig<
   TFunctionName extends ExtractAbiFunctionNames<ContractAbi<TContractName>, ReadAbiStateMutability>,
 > = {
   contractName: TContractName;
-  contractAddress: TContractAddress;
+  contractAddress?: TContractAddress;
 } & IsContractDeclarationMissing<
   Partial<UseContractReadConfig>,
   {

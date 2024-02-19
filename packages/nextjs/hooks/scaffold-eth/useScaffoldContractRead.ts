@@ -15,6 +15,7 @@ import {
  * the contracts present in deployedContracts.ts & externalContracts.ts corresponding to targetNetworks configured in scaffold.config.ts
  * @param config - The config settings, including extra wagmi configuration
  * @param config.contractName - deployed contract name
+ * @param config.contractAddress - custom contract address
  * @param config.functionName - name of the function to be called
  * @param config.args - args to be passed to the function call
  */

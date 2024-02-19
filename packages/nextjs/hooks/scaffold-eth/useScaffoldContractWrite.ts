@@ -13,6 +13,7 @@ type UpdatedArgs = Parameters<ReturnType<typeof useContractWrite<Abi, string, un
  * the contracts present in deployedContracts.ts & externalContracts.ts corresponding to targetNetworks configured in scaffold.config.ts
  * @param config - The config settings, including extra wagmi configuration
  * @param config.contractName - contract name
+ * @param config.contractAddress - custom contract address
  * @param config.functionName - name of the function to be called
  * @param config.args - arguments for the function
  * @param config.value - value in ETH that will be sent with transaction

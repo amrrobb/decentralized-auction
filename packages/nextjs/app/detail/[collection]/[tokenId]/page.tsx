@@ -1,82 +1,76 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { BidHEventHistory, NFTDetail } from "./_components";
+import { Nft } from "alchemy-sdk";
 import type { NextPage } from "next";
-import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
+import { alchemy } from "~~/services/alchemy";
 
-// import { useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
+interface Auction {
+  seller: string;
+  highestBidder: string;
+  startingPrice: string;
+  highestBid: string;
+  endTime: bigint;
+  ended: boolean;
+}
 
 const Detail: NextPage = () => {
   const { collection, tokenId } = useParams<{ collection: string; tokenId: string }>();
+  const [nft, setNft] = useState<Nft>();
+  const [auction, setAuction] = useState<Auction>();
 
-  // const { data: bidPlacedEvents, isLoading: isBidPlacedEventsLoading } = useScaffoldEventHistory({
-  //   contractName: "DecentralizedAuction",
-  //   eventName: "BidPlaced",
-  //   fromBlock: 5299390n,
-  //   filters: {
-  //     nftContract: collection,
-  //     tokenId: BigInt(tokenId),
-  //   },
-  // });
+  const { data: getAuction, isLoading: isAuctionLoading } = useScaffoldContractRead({
+    contractName: "DecentralizedAuction",
+    functionName: "getAuction",
+    args: [collection, BigInt(tokenId)],
+  });
+
+  const fetchNFT = async () => {
+    try {
+      const nft = await alchemy.nft.getNftMetadata(collection, tokenId);
+      setNft(nft);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!nft) {
+      fetchNFT();
+    }
+    if (getAuction) {
+      setAuction({
+        seller: getAuction[0],
+        highestBidder: getAuction[1],
+        startingPrice: getAuction[2].toString(),
+        highestBid: getAuction[3].toString(),
+        endTime: getAuction[4],
+        ended: getAuction[5],
+      });
+    }
+  }, [getAuction, isAuctionLoading]);
 
   return (
     <>
-      <div>
-        <h1>Detail Page</h1>
-        <p>collection: {collection}</p>
-        <p>tokenId: {tokenId}</p>
-        {/* <p>Seller: {seller}</p> */}
-      </div>
       <div className="flex items-center flex-col flex-grow pt-10">
         <div className="px-5">
           <h1 className="text-center mb-8">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
+            <span className="block text-2xl mb-2">Auction Detail</span>
+            <span className="block text-4xl font-semibold">
+              {nft?.contract?.name} [#{nft?.tokenId}]
+            </span>
           </h1>
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
-          </p>
         </div>
 
-        {/* <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12"> */}
-        <div className="grid grid-cols-4 justify-items-center items-start gap-8">
-          <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-            <BugAntIcon className="h-8 w-8 fill-secondary" />
-            <p>
-              Tinker with your smart contract using the{" "}
-              <Link href="/debug" passHref className="link">
-                Debug Contract
-              </Link>{" "}
-              tab.
-            </p>
-          </div>
-          <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-4xl rounded-3xl col-span-3 justify-self-stretch">
-            <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
-            <p>
-              Explore your local transactions with the{" "}
-              <Link href="/blockexplorer" passHref className="link">
-                Block Explorer
-              </Link>{" "}
-              tab.
-            </p>
-          </div>
+        <div className="grid grid-cols-6 justify-items-center items-start gap-8">
+          <NFTDetail auction={auction} collection={collection} nft={nft} tokenId={tokenId} />
+
+          <BidHEventHistory tokenId={tokenId} collection={collection} />
         </div>
       </div>
-      {/* </div> */}
     </>
   );
 };

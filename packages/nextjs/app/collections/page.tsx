@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { NFTCard } from "./_components";
+import { ConnectedAddress, NFTCard } from "./_components";
 import { OwnedNft } from "alchemy-sdk";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
@@ -10,6 +10,7 @@ import { alchemy } from "~~/services/alchemy";
 const Collections: NextPage = () => {
   const { address } = useAccount();
   const [NFTs, setNFTs] = useState<OwnedNft[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchNFTs = async () => {
     try {
@@ -19,6 +20,7 @@ const Collections: NextPage = () => {
           console.log("nfts:", nfts.ownedNfts);
           setNFTs(nfts.ownedNfts);
         }
+        setIsLoading(true);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -27,7 +29,7 @@ const Collections: NextPage = () => {
 
   useEffect(() => {
     fetchNFTs();
-  }, [fetchNFTs, address]);
+  }, [address]);
 
   return (
     <>
@@ -39,16 +41,23 @@ const Collections: NextPage = () => {
           </h1>
         </div>
 
+        <ConnectedAddress />
         <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
-          {NFTs.length === 0 ? (
+          {!isLoading ? (
             <h2 className="text-xl text-gray-200 flex justify-center">Loading...</h2>
           ) : (
-            <div className="justify-items-center items-center gap-8 grid grid-cols-5">
-              {NFTs.length &&
-                NFTs.map((nft, index) => {
-                  return <NFTCard nft={nft} key={index}></NFTCard>;
-                })}
-            </div>
+            <>
+              {NFTs.length === 0 ? (
+                <h2 className="text-xl text-gray-200 flex justify-center">There is no collection</h2>
+              ) : (
+                <div className="justify-items-center items-center gap-8 grid grid-cols-5">
+                  {NFTs.length &&
+                    NFTs?.map((nft, index) => {
+                      return <NFTCard nft={nft} key={index}></NFTCard>;
+                    })}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

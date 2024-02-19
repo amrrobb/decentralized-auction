@@ -13,7 +13,7 @@ export function getTimeLeft(timestampString: string | bigint) {
 
   // Check if the target time is in the past
   if (difference <= 0) {
-    return "-";
+    return "passed";
   }
 
   // Calculate days, hours, minutes, and seconds
@@ -39,4 +39,14 @@ export function getTimeLeft(timestampString: string | bigint) {
   if (seconds > 0) {
     return `${seconds} seconds`;
   }
+}
+
+export function checkTimeOut(endTime: string | bigint): boolean {
+  const result = getTimeLeft(endTime);
+  return result === "passed";
+}
+
+export function isAddressZero(address: string): boolean {
+  const addressZero = "0x0000000000000000000000000000000000000000";
+  return address === addressZero;
 }

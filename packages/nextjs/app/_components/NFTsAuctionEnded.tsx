@@ -33,12 +33,16 @@ export const NFTsAuctionEnded = () => {
   useEffect(() => {
     if (!isLoading && auctionEndedEvents && auctionEndedEvents.length) {
       const batch: NftMetadataBatchToken[] = [];
-      auctionEndedEvents?.map(event => {
-        batch.push({
-          contractAddress: event.args.nftContract!,
-          tokenId: Number(event.args.tokenId!),
-        });
-      });
+      auctionEndedEvents?.map(
+        event => {
+          // if (event.args.nftContract !== undefined && event.args.tokenId !== undefined) {
+          batch.push({
+            contractAddress: event.args!.nftContract!,
+            tokenId: String(event.args!.tokenId!),
+          });
+        },
+        // }
+      );
       setNFTMetadataBatch(batch);
       setIsLoading(true);
     }

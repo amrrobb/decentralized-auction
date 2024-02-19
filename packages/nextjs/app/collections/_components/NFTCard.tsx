@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import { AuctionModalForm } from "./AuctionModalForm";
 import { Address } from "~~/components/scaffold-eth";
 
@@ -13,7 +12,9 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, key }) => {
     <>
       <div key={key} className="flex flex-col bg-base-200 text-center items-center rounded-xl pb-9">
         <div className="rounded-md">
-          <Image
+          <img
+            // width={400}
+            // height={200}
             alt="nft-image-url"
             className="object-cover hover:object-contain h-48 w-96 rounded-t-xl"
             src={nft.image.cachedUrl || "./placeholder.png"}

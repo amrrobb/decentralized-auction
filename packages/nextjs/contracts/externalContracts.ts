@@ -14,7 +14,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const externalContracts = {
   11155111: {
     ERC721: {
-      address: "0x...",
+      address: "0x0000000000000000000000000000000000000000",
       abi: [
         {
           anonymous: false,

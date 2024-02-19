@@ -1,5 +1,4 @@
 import { SetStateAction, useEffect, useState } from "react";
-import Image from "next/image";
 import { parseEther } from "viem";
 import { EtherInput, InputBase } from "~~/components/scaffold-eth";
 import { useDeployedContractInfo, useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
@@ -54,7 +53,7 @@ export const AuctionModalForm: React.FC<NFTCardProps> = ({ nft }) => {
   };
 
   const checkApproved = () => {
-    return getApprovedCollection === deAuctionContractData?.address;
+    return getApprovedCollection !== undefined && getApprovedCollection === deAuctionContractData?.address;
   };
 
   const handleDropdownChange = (event: { target: { value: SetStateAction<string> } }) => {
@@ -80,6 +79,42 @@ export const AuctionModalForm: React.FC<NFTCardProps> = ({ nft }) => {
     closeModal();
   };
 
+  const displayAfterApproved = () => {
+    if (isApproved) {
+      return (
+        <>
+          <div className="flex justify-between items-center">
+            <label>Starting price: </label>
+            <div className="w-3/5">
+              <EtherInput value={startingPrice} placeholder="ETH" onChange={amount => setStartingPrice(amount)} />
+            </div>
+          </div>
+          <div className="flex justify-between items-center">
+            <label htmlFor="dropdown">Select duration:</label>
+            <div className="flex border-2 border-base-300 bg-base-200 rounded-full text-accent w-3/5">
+              <select
+                id="dropdown"
+                value={duration}
+                onChange={handleDropdownChange}
+                className="input input-ghost focus-within:border-transparent focus:outline-none focus:bg-transparent focus:text-gray-400 h-[2.2rem] min-h-[2.2rem] px-4 border w-full font-medium placeholder:text-accent/50 text-gray-400 "
+              >
+                <option value={""}>Choose duration </option>
+                <option selected value={60}>
+                  1 Minute
+                </option>
+                <option value={60 * 5}>5 Minute</option>
+                <option value={60 * 10}>10 Minute</option>
+                <option value={3600}>1 Hour</option>
+                <option value={3600 * 24}>1 Day</option>
+                {/* Add more options as needed */}
+              </select>
+            </div>
+          </div>
+        </>
+      );
+    }
+  };
+
   return (
     <div>
       <button
@@ -100,7 +135,7 @@ export const AuctionModalForm: React.FC<NFTCardProps> = ({ nft }) => {
               <p className="m-0 text-l text-gray-200">{nft.contract.name || "\n"}</p>
             </div>
             <div className="rounded-md mb-8 mt-5">
-              <Image
+              <img
                 alt="nft-image-url"
                 className="object-cover h-48 w-96 rounded-xl mx-auto"
                 src={nft.image.cachedUrl || "./placeholder.png"}
@@ -119,32 +154,7 @@ export const AuctionModalForm: React.FC<NFTCardProps> = ({ nft }) => {
                   <InputBase value={tokenId} disabled={true} onChange={setTokenId} />
                 </div>
               </div>
-              <div className="flex justify-between items-center">
-                <label>Starting price: </label>
-                <div className="w-3/5">
-                  <EtherInput value={startingPrice} placeholder="ETH" onChange={amount => setStartingPrice(amount)} />
-                </div>
-              </div>
-              <div className="flex justify-between items-center">
-                <label htmlFor="dropdown">Select duration:</label>
-                <div className="flex border-2 border-base-300 bg-base-200 rounded-full text-accent w-3/5">
-                  <select
-                    id="dropdown"
-                    value={duration}
-                    onChange={handleDropdownChange}
-                    className="input input-ghost focus-within:border-transparent focus:outline-none focus:bg-transparent focus:text-gray-400 h-[2.2rem] min-h-[2.2rem] px-4 border w-full font-medium placeholder:text-accent/50 text-gray-400 "
-                  >
-                    <option value={""}>Choose duration </option>
-                    <option selected value={60}>
-                      1 Minute
-                    </option>
-                    <option value={600}>10 Minute</option>
-                    <option value={3600}>1 Hour</option>
-                    <option value={3600 * 24}>1 Day</option>
-                    {/* Add more options as needed */}
-                  </select>
-                </div>
-              </div>
+              {displayAfterApproved()}
 
               <div className="flex justify-center items-center mt-8 mb-2">
                 {isApproved ? (
