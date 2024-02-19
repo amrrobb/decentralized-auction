@@ -10,7 +10,7 @@ interface DynamicLinkButton {
 export const ClaimNFTButton: React.FC<DynamicLinkButton> = ({ collection, tokenId }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [receiver, setReceiver] = useState("");
-  const [args, setArgs] = useState([]);
+  const [args, setArgs] = useState([collection, BigInt(tokenId)]);
 
   const { writeAsync: claimNft } = useScaffoldContractWrite({
     contractName: "DecentralizedAuction",
@@ -22,7 +22,9 @@ export const ClaimNFTButton: React.FC<DynamicLinkButton> = ({ collection, tokenI
     setIsChecked(!isChecked);
   };
 
-  const handleClaimNFT = async () => {
+  const handleClaimNFT = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+
     const newArgs = [collection, BigInt(tokenId)] as never;
     if (isChecked && receiver) {
       args.push(receiver as never);
@@ -50,8 +52,8 @@ export const ClaimNFTButton: React.FC<DynamicLinkButton> = ({ collection, tokenI
           </div>
         )}
         <button
-          onClick={async () => {
-            await handleClaimNFT();
+          onClick={async e => {
+            await handleClaimNFT(e);
           }}
           className=" text-white font-bold rounded-lg bg-sky-500/75 hover:bg-sky-500/50 px-10 py-2"
         >

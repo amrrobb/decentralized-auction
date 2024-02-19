@@ -1432,24 +1432,6 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "address",
-              name: "to",
-              type: "address",
-            },
-            {
-              internalType: "uint256",
-              name: "index",
-              type: "uint256",
-            },
-          ],
-          name: "mint",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
           inputs: [],
           name: "name",
           outputs: [
@@ -1479,6 +1461,19 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+          ],
+          name: "safeMint",
+          outputs: [],
+          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -1643,7 +1638,7 @@ const deployedContracts = {
   },
   11155111: {
     DecentralizedAuction: {
-      address: "0x57AEEa89EB98F61232799b3859Ab16e3703DB458",
+      address: "0x8f86351A1394C07300f6F2071DAfE931F209efC7",
       abi: [
         {
           inputs: [
@@ -2173,7 +2168,7 @@ const deployedContracts = {
       },
     },
     NFTWithoutUri: {
-      address: "0x13BfEa97b7dD2E120c69A2470D4aAF05f0C964C4",
+      address: "0x2F7296aebCBc5a8D67A65FA6BF09dD74c70bC60f",
       abi: [
         {
           inputs: [
@@ -2770,7 +2765,7 @@ const deployedContracts = {
       },
     },
     NFTWithUri: {
-      address: "0xDcE3FBce3d7ED4e01D0f5e338f8Eb9cde6B589eE",
+      address: "0x349D286aF27501d4119C11709bb48f4Ef9f50450",
       abi: [
         {
           inputs: [],
@@ -3068,24 +3063,6 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "address",
-              name: "to",
-              type: "address",
-            },
-            {
-              internalType: "uint256",
-              name: "index",
-              type: "uint256",
-            },
-          ],
-          name: "mint",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
           inputs: [],
           name: "name",
           outputs: [
@@ -3115,6 +3092,19 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+          ],
+          name: "safeMint",
+          outputs: [],
+          stateMutability: "nonpayable",
           type: "function",
         },
         {

@@ -30,7 +30,7 @@ export const ConnectedAddress = () => {
         onClick={async () => {
           await handleWithdraw();
         }}
-        disabled={formatEther(balance!) === "0"}
+        disabled={!balance || formatEther(balance) === "0"}
         className=" text-white font-bold rounded-lg bg-sky-500/75 hover:bg-sky-500/50 px-10 py-2"
       >
         Withdraw
