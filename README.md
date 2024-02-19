@@ -8,8 +8,6 @@ Welcome to the Decentralized Auction Platform named D-Auction, a smart contract-
 
 ⚙️ Tech Stack: NextJS, RainbowKit, Foundry, Wagmi, Viem, Alchemy, Scaffold-ETH 2 and Typescript.
 
-🎬 Video: https://drive.google.com/file/d/1GtTJcEEKLJFhTFTLj51pwouDmm4iSBCo/view?usp=sharing
-
 📜 Contract: https://sepolia.etherscan.io/address/0x8f86351a1394c07300f6f2071dafe931f209efc7#code
 
 🧑🏻‍💻 Demo: https://d-auction-app-amrrobb.vercel.app/
@@ -29,3 +27,7 @@ Welcome to the Decentralized Auction Platform named D-Auction, a smart contract-
 2. **Bidder**: Users who participate in ongoing auctions by placing bids on NFTs they are interested in acquiring. Bidders interact with the platform by calling the `placeBid` function.
 
 3. **Winner**: The bidder who submits the highest bid within the auction's time frame becomes the winner of the auction. The winner can claim ownership of the NFT by calling the `claimNft` function.
+
+## Video Demonstration
+
+[![Watch the video](https://img.youtube.com/vi/fexsYRnLPQY/maxresdefault.jpg)](https://youtu.be/fexsYRnLPQY)
